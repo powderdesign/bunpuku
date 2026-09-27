@@ -1,5 +1,5 @@
 // オフラインでも遊べるよう、全素材をキャッシュする
-const CACHE = 'bunpuku-v1';
+const CACHE = 'bunpuku-v2';
 const ASSETS = [
   './', 'index.html', 'app.js', 'manifest.webmanifest',
   'img/scratch.jpg', 'img/brush.png', 'img/about.jpg',

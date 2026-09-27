@@ -138,7 +138,7 @@ function drawLetterboxed(ctx, W, H, dpr, img, design, style) {
 const sound = {
   ctx: null, buffers: {}, scratchPlaying: false,
   async unlock() {
-    if (this.ctx) { if (this.ctx.state !== 'running') this.ctx.resume(); return; }
+    if (this.ctx) { if (this.ctx.state !== 'running') this.ctx.resume().catch(() => {}); return; }
     // ambient：他のアプリの音楽を止めない（オリジナルの System Sound と同じ振る舞い）
     try { if (navigator.audioSession) navigator.audioSession.type = 'ambient'; } catch {}
     const AC = window.AudioContext || window.webkitAudioContext;
@@ -267,7 +267,12 @@ metalCanvas.addEventListener('pointermove', (e) => {
   sound.scratch();
 });
 const endStroke = () => { current = null; };
-metalCanvas.addEventListener('pointerup', (e) => { endStroke(); requestMotion(); });
+metalCanvas.addEventListener('pointerup', (e) => { endStroke(); sound.unlock(); requestMotion(); });
+// iOS のバージョンによっては touchstart / pointerdown では音の再生制限が解除されず、
+// touchend / click でないと解除できない。どの操作でも解除（中断後の再開も）を試みる。
+for (const type of ['touchend', 'click', 'keydown']) {
+  document.addEventListener(type, () => sound.unlock(), { capture: true, passive: true });
+}
 metalCanvas.addEventListener('pointercancel', endStroke);
 metalCanvas.addEventListener('contextmenu', (e) => e.preventDefault());
 // Safari のダブルタップ拡大などを抑止
