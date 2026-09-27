@@ -139,8 +139,9 @@ const sound = {
   ctx: null, buffers: {}, scratchPlaying: false,
   async unlock() {
     if (this.ctx) { if (this.ctx.state !== 'running') this.ctx.resume().catch(() => {}); return; }
-    // ambient：他のアプリの音楽を止めない（オリジナルの System Sound と同じ振る舞い）
-    try { if (navigator.audioSession) navigator.audioSession.type = 'ambient'; } catch {}
+    // playback：消音モード中でも鳴らす（iOS 16.4 以降の Safari）。
+    // その代わり、他のアプリで再生中の音楽は Bunpuku の音が鳴ると止まる。
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch {}
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
     this.ctx = new AC();
