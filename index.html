@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Bunpuku おみくじ</title>
+<meta name="description" content="こするとおみくじ、振るとやり直し。">
+<meta name="theme-color" content="#bebebe">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Bunpuku">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="icon" href="img/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  :root { --metal: #bebebe; --paper: #e9e0d2; }
+  html, body {
+    margin: 0; height: 100%; overflow: hidden;
+    background: var(--metal);
+    overscroll-behavior: none;
+    -webkit-user-select: none; user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body { position: fixed; inset: 0; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  #metal { touch-action: none; }
+
+  .btn {
+    position: absolute; width: 44px; height: 44px; border: 0; padding: 0;
+    background: none; display: grid; place-items: center; cursor: pointer;
+    color: rgba(60, 60, 60, .85);
+  }
+  .btn svg { width: 24px; height: 24px; }
+  #again { left: calc(12px + env(safe-area-inset-left)); bottom: calc(8px + env(safe-area-inset-bottom)); }
+  #again[hidden] { display: none; }
+  #info { right: calc(12px + env(safe-area-inset-right)); bottom: calc(8px + env(safe-area-inset-bottom)); }
+
+  /* クレジット画面（オリジナルの Flipside） */
+  #stage { position: fixed; inset: 0; perspective: 1400px; }
+  #card { position: absolute; inset: 0; transform-style: preserve-3d; transition: transform .6s cubic-bezier(.4, .1, .2, 1); }
+  #card.flipped { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; }
+  #back { transform: rotateY(180deg); background: var(--paper); }
+  #close { right: calc(12px + env(safe-area-inset-right)); top: calc(8px + env(safe-area-inset-top)); color: rgba(60, 60, 60, .7); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="card">
+    <div class="face" id="front">
+      <canvas id="fortune" aria-hidden="true"></canvas>
+      <canvas id="metal" role="img" aria-label="Bunpuku おみくじ。画面をこするとおみくじが現れます。端末を振ると引き直します。"></canvas>
+      <button class="btn" id="again" aria-label="引き直す" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v4.5h-4.5"/></svg>
+      </button>
+      <button class="btn" id="info" aria-label="このアプリについて">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M12 11v6M12 7.5v.01" stroke-linecap="round" stroke-width="2"/></svg>
+      </button>
+    </div>
+    <div class="face" id="back">
+      <canvas id="about" role="img" aria-label="Bunpuku おみくじ。こするとくじ引き、振るとやり直し。illustrated by Nobuyuki Matsui, created by POWDER DESIGN, programmed by Masaharu Hirose. Copyright 2011 POWDER DESIGN"></canvas>
+      <button class="btn" id="close" aria-label="閉じる">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
